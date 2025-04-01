@@ -1,0 +1,44 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+pyLispVenv/
+
+# VSCode settings
+.vscode/
+.code-workspace
+
+# Pytest cache
+.pytest_cache/
+
+# Pre-commit cache
+.pre-commit-config.yaml~  # temporary backups, if any
+*.log
+
+# mypy, coverage, profiling
+.mypy_cache/
+.coverage
+htmlcov/
+*.prof
+
+# MacOS-specific files
+.DS_Store
+
+# Backup files
+*~
+*.bak
+*.swp
+
+# Ignore env files and local secrets
+.env
+.env.*
+
+# Ruff cache (if configured explicitly)
+.cache/
+
+# Other common build artifacts
+build/
+dist/
+*.egg-info/
