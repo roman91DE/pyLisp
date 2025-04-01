@@ -1,10 +1,10 @@
+from string import whitespace
+from typing import Iterable
+
 import symbols
 
-from typing import Iterable
-from string import whitespace
 
 def tokenizer(s: str) -> Iterable[str]:
-    
     tokens, acc = [], []
 
     for c in s:
@@ -17,11 +17,9 @@ def tokenizer(s: str) -> Iterable[str]:
             tokens.append(c)
         else:
             acc += c
-        
 
-    return filter(lambda s : len(s) > 0, tokens)
+    return filter(lambda s: len(s) > 0, tokens)
+
 
 def tokenize_to_list(s: str) -> list[str]:
     return list(tokenizer(s))
-
-
