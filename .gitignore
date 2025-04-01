@@ -36,7 +36,7 @@ htmlcov/
 .env.*
 
 # Ruff cache (if configured explicitly)
-.cache/
+.ruff_cache/
 
 # Other common build artifacts
 build/
