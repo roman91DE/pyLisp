@@ -14,7 +14,7 @@ def tokenizer(s: str) -> Iterable[str]:
         if c in whitespace:
             tokens.append("".join(acc))
             acc.clear()
-        elif c in symbols.operators or c in symbols.parens:
+        elif c in symbols.operators.union(symbols.parens):
             tokens.append("".join(acc))
             acc.clear()
             tokens.append(c)
