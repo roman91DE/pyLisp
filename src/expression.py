@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 # In[12]:
 
@@ -7,6 +6,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from numbers import Number
+from sys import stderr
 from typing import Generic, LiteralString, TypeVar
 
 # In[13]:
@@ -16,6 +16,17 @@ class Expression(ABC):
     @abstractmethod
     def eval(self) -> Number:
         pass
+
+
+class Empty(Expression):
+    def eval(self) -> None:
+        return None
+
+    def __repr__(self) -> LiteralString:
+        return "()"
+
+    def __str__(self) -> LiteralString:
+        return self.__repr__()
 
 
 # In[ ]:
@@ -47,6 +58,28 @@ class Constant(Scalar[int | float]):
 
 
 # In[15]:
+class UnaryOperator(Expression):
+    def __init__(self, val: Expression) -> None:
+        self.lhs = val
+
+    @abstractmethod
+    def operator_symbol() -> str:
+        pass
+
+    def __repr__(self) -> str:
+        return f"{self.operator_symbol()} {self.lhs}"
+
+    def __str__(self) -> str:  # called for print
+        return f"({self.operator_symbol()} {self.lhs})"
+
+
+class NOT(UnaryOperator):
+    @staticmethod
+    def operator_symbol() -> LiteralString:
+        return "!"
+
+    def eval(self) -> Boolean:
+        return Boolean(not bool(self.lhs.eval()))
 
 
 class BinaryOperator(Expression):
@@ -66,9 +99,6 @@ class BinaryOperator(Expression):
 
 
 class Addition(BinaryOperator):
-    def __init__(self, lhs: Expression, rhs: Expression):
-        super().__init__(lhs, rhs)
-
     @staticmethod
     def operator_symbol() -> LiteralString:
         return "+"
@@ -76,14 +106,43 @@ class Addition(BinaryOperator):
     def eval(self) -> Number:
         return self.lhs.eval() + self.rhs.eval()
 
-    def __repr__(self) -> str:
-        return f"({super().__str__()})"
+
+class Subtraction(BinaryOperator):
+    @staticmethod
+    def operator_symbol() -> LiteralString:
+        return "-"
+
+    def eval(self) -> Number:
+        return self.lhs.eval() - self.rhs.eval()
+
+
+class Multiplication(BinaryOperator):
+    @staticmethod
+    def operator_symbol() -> LiteralString:
+        return "*"
+
+    def eval(self) -> Number:
+        return self.lhs.eval() * self.rhs.eval()
+
+
+class Division(BinaryOperator):
+    @staticmethod
+    def operator_symbol() -> LiteralString:
+        return "/"
+
+    def eval(self) -> Number | None:
+        denominator = self.rhs.eval()
+        if denominator == 0:
+            print(
+                f"PyLisp - Error: Attempt to divide by Denominator: {denominator}",
+                file=stderr,
+            )
+            return None
+
+        return self.lhs.eval() / denominator
 
 
 class LT(BinaryOperator):
-    def __init__(self, lhs: Expression, rhs: Expression):
-        super().__init__(lhs, rhs)
-
     @staticmethod
     def operator_symbol() -> LiteralString:
         return "<"
@@ -91,8 +150,32 @@ class LT(BinaryOperator):
     def eval(self) -> Boolean:
         return Boolean(self.lhs.eval() < self.rhs.eval())
 
-    def __repr__(self) -> str:
-        return f"({super().__str__()})"
+
+class EQ(BinaryOperator):
+    @staticmethod
+    def operator_symbol() -> LiteralString:
+        return "=="
+
+    def eval(self) -> Boolean:
+        return Boolean(self.lhs.eval() == self.rhs.eval())
+
+
+class AND(BinaryOperator):
+    @staticmethod
+    def operator_symbol() -> LiteralString:
+        return "&"
+
+    def eval(self) -> Boolean:
+        return Boolean(bool(self.lhs.eval()) and bool(self.rhs.eval()))
+
+
+class OR(BinaryOperator):
+    @staticmethod
+    def operator_symbol() -> LiteralString:
+        return "|"
+
+    def eval(self) -> Boolean:
+        return Boolean(bool(self.lhs.eval()) or bool(self.rhs.eval()))
 
 
 # In[16]:
@@ -120,7 +203,10 @@ class TernaryOperator(Expression):
 
 class IfThenElse(TernaryOperator):
     def __init__(
-        self, fst: EvaluatesToBool, scnd: Expression, thrd: Expression
+        self,
+        fst: EvaluatesToBool,
+        scnd: Expression,
+        thrd: Expression,
     ) -> None:
         super().__init__(fst, scnd, thrd)
 
@@ -134,8 +220,4 @@ class IfThenElse(TernaryOperator):
     def eval(self) -> Number:
         if self.fst.eval():
             return self.scnd.eval()
-        else:
-            return self.thrd.eval()
-
-
-# In[ ]:
+        return self.thrd.eval()

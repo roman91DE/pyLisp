@@ -1,13 +1,11 @@
+from collections.abc import Iterable
 from string import whitespace
-from typing import Iterable
 
 import symbols
 
 
 def tokenizer(s: str) -> Iterable[str]:
-    """
-    Tokenizes an Expression String into its single Tokens
-    """
+    """Tokenizes an Expression String into its single Tokens"""
     tokens, acc = [], []
 
     for c in s:

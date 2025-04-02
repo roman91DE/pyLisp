@@ -1,0 +1,29 @@
+[tool.ruff]
+line-length = 88  # or 79 for PEP8 strict
+target-version = "py311"
+extend-exclude = ["migrations", "__pycache__"]
+fix = true  # allows autofix on save if using with e.g. pre-commit
+
+# Curated rule set for practical linting
+lint.select = [
+  "E",    # pycodestyle errors
+  "F",    # pyflakes
+  "I",    # isort
+  "B",    # flake8-bugbear
+  "UP",   # pyupgrade
+  "C90",  # mccabe complexity
+]
+
+# Optionally ignore specific rules you don't care about
+lint.ignore = [
+  "D203",  # conflicts with D211
+  "D213",  # conflicts with D212
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"  # or "numpy" or "pep257"
+
+[tool.ruff.lint.isort]
+known-first-party = ["pyLisp"]
+force-sort-within-sections = true
+combine-as-imports = true
