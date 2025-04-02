@@ -1,3 +1,3 @@
-operators = set(("+", "-", "*", "/", "<", "==", "ifThenElse"))
+operators = set(("+", "-", "*", "/", "<", "==", "IfThenElse"))
 
 parens = set(("(", ")"))
